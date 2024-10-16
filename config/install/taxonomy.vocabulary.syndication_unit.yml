@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: Unit
+vid: syndication_unit
+description: 'Defines the units for article syndication.'
+weight: 0

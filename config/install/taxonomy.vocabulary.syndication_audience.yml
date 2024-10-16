@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: Audience
+vid: syndication_audience
+description: 'Defines the audiences for article syndication.'
+weight: 0

@@ -1,0 +1,5 @@
+services:
+  ucb_article_syndication:
+    class: 'Drupal\ucb_article_syndication\ArticleSyndication'
+    arguments:
+      - '@config.factory'

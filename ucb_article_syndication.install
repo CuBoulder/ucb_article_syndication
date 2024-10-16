@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Contains install hooks used by the CU Boulder Article Syndication module.
+ */
+
+/**
+ * Runs when the CU Boulder Article Syndication module is installed.
+ *
+ * Implements hook_install().
+ */
+function ucb_article_syndication_install() {
+  $articleSyndication = \Drupal::service('ucb_article_syndication');
+  $articleSyndication->showSyndicationFields();
+}
