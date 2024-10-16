@@ -5,5 +5,7 @@ type: module
 version: '1.0'
 package: CU Boulder
 dependencies:
+  - cu_boulder_content_types
+  - field
   - node
   - taxonomy
