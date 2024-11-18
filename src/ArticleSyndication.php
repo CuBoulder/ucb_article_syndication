@@ -133,7 +133,12 @@ class ArticleSyndication {
   }
 
   /**
-   * Creates the `/syndication` article list.
+   * Creates the syndication article list.
+   *
+   * The syndication article list is a special article list which allows
+   * category, audience, and unit term ids to be passed in as URL parameters.
+   * Its main use case is to be used as the "read more" page for the Campus
+   * News block.
    */
   public function createSyndicationArticleList() {
     if (preg_match('/node\/(\d+)/', $this->aliasManager->getPathByAlias($this::SYNDICATION_PATH))) {
