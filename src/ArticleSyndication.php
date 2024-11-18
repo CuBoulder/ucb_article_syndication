@@ -14,6 +14,11 @@ use Psr\Log\LoggerInterface;
 class ArticleSyndication {
 
   /**
+   * The path alias at which the syndication article list should reside.
+   */
+  const SYNDICATION_PATH = '/syndicate';
+
+  /**
    * The config factory.
    *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
@@ -131,14 +136,14 @@ class ArticleSyndication {
    * Creates the `/syndication` article list.
    */
   public function createSyndicationArticleList() {
-    if (preg_match('/node\/(\d+)/', $this->aliasManager->getPathByAlias('/syndication'))) {
+    if (preg_match('/node\/(\d+)/', $this->aliasManager->getPathByAlias($this::SYNDICATION_PATH))) {
       $this->logger->warning('A syndication article list wasn’t created because a node already exists at that path.');
     }
     else {
       $node = Node::create([
         'type' => 'ucb_article_list',
         'title' => 'Article Results',
-        'path' => ['alias' => '/syndication', 'pathauto' => PathautoState::SKIP],
+        'path' => ['alias' => $this::SYNDICATION_PATH, 'pathauto' => PathautoState::SKIP],
         'body' => '',
       ]);
       $node->enforceIsNew()->save();
