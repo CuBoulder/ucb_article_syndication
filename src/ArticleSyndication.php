@@ -3,6 +3,10 @@
 namespace Drupal\ucb_article_syndication;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\node\Entity\Node;
+use Drupal\path_alias\AliasManagerInterface;
+use Drupal\pathauto\PathautoState;
+use Psr\Log\LoggerInterface;
 
 /**
  * The Article Syndication service contains functions used by the module.
@@ -17,13 +21,37 @@ class ArticleSyndication {
   protected $configFactory;
 
   /**
+   * The path alias manager.
+   *
+   * @var \Drupal\path_alias\AliasManagerInterface
+   */
+  protected $aliasManager;
+
+  /**
+   * The logger channel for this module.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
    * Constructs the Article Syndication service.
    *
    * @param \Drupal\Core\Extension\ConfigFactoryInterface $config_factory
    *   The config factory.
+   * @param \Drupal\path_alias\AliasManagerInterface $alias_manager
+   *   The path alias manager.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   The logger channel for this module.
    */
-  public function __construct(ConfigFactoryInterface $config_factory) {
+  public function __construct(
+    ConfigFactoryInterface $config_factory,
+    AliasManagerInterface $alias_manager,
+    LoggerInterface $logger
+  ) {
     $this->configFactory = $config_factory;
+    $this->aliasManager = $alias_manager;
+    $this->logger = $logger;
   }
 
   /**
@@ -97,6 +125,24 @@ class ArticleSyndication {
       ->set('third_party_settings', $thirdPartySettings)
       ->set('hidden', $hidden)
       ->save();
+  }
+
+  /**
+   * Creates the `/syndication` article list.
+   */
+  public function createSyndicationArticleList() {
+    if (preg_match('/node\/(\d+)/', $this->aliasManager->getPathByAlias('/syndication'))) {
+      $this->logger->warning('A syndication article list wasn’t created because a node already exists at that path.');
+    }
+    else {
+      $node = Node::create([
+        'type' => 'ucb_article_list',
+        'title' => 'Article Results',
+        'path' => ['alias' => '/syndication', 'pathauto' => PathautoState::SKIP],
+        'body' => '',
+      ]);
+      $node->enforceIsNew()->save();
+    }
   }
 
 }
