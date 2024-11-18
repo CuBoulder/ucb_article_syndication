@@ -139,10 +139,13 @@ class ArticleSyndication {
    * category, audience, and unit term ids to be passed in as URL parameters.
    * Its main use case is to be used as the "read more" page for the Campus
    * News block.
+   *
+   * A new article list will be created only if a node doesn’t already exist at
+   * the same path.
    */
   public function createSyndicationArticleList() {
     if (preg_match('/node\/(\d+)/', $this->aliasManager->getPathByAlias($this::SYNDICATION_PATH))) {
-      $this->logger->warning('A syndication article list wasn’t created because a node already exists at that path.');
+      $this->logger->warning('A syndication article list wasn’t created because a node already exists at the path ' . $this::SYNDICATION_PATH . '.');
     }
     else {
       $node = Node::create([
