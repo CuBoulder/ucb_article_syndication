@@ -144,14 +144,18 @@ class ArticleSyndication {
    * the same path.
    */
   public function createSyndicationArticleList() {
-    if (preg_match('/node\/(\d+)/', $this->aliasManager->getPathByAlias($this::SYNDICATION_PATH))) {
-      $this->logger->warning('A syndication article list wasn’t created because a node already exists at the path ' . $this::SYNDICATION_PATH . '.');
+    $pathAlias = $this::SYNDICATION_PATH;
+    if (preg_match('/node\/(\d+)/', $this->aliasManager->getPathByAlias($pathAlias))) {
+      $this->logger->warning("A syndication article list wasn’t created because a node already exists at the path alias $pathAlias.");
     }
     else {
       $node = Node::create([
         'type' => 'ucb_article_list',
         'title' => 'Article Results',
-        'path' => ['alias' => $this::SYNDICATION_PATH, 'pathauto' => PathautoState::SKIP],
+        'path' => [
+          'alias' => $pathAlias,
+          'pathauto' => PathautoState::SKIP,
+        ],
         'body' => '',
       ]);
       $node->enforceIsNew()->save();
