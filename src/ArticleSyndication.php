@@ -40,7 +40,7 @@ class ArticleSyndication {
     $hidden = $articleContentTypeConfig->get('hidden');
 
     $content['field_syndication_audience'] = [
-      'type' => 'entity_reference_autocomplete',
+      'type' => 'entity_reference_autocomplete_tags',
       'weight' => 98,
       'region' => 'content',
       'settings' => [
@@ -52,7 +52,7 @@ class ArticleSyndication {
       'third_party_settings' => [],
     ];
     $content['field_syndication_unit'] = [
-      'type' => 'entity_reference_autocomplete',
+      'type' => 'entity_reference_autocomplete_tags',
       'weight' => 99,
       'region' => 'content',
       'settings' => [
