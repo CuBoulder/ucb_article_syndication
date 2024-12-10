@@ -2,10 +2,12 @@ name: CU Boulder Article Syndication
 description: Extends the article content type to add the taxonomies needed for article syndication.
 core_version_requirement: ^10 || ^11
 type: module
-version: '1.1'
+version: '1.2'
 package: CU Boulder
 dependencies:
   - cu_boulder_content_types
   - field
   - node
+  - path_alias
+  - pathauto
   - taxonomy

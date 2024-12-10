@@ -1,5 +1,10 @@
 services:
+  logger.channel.ucb_article_syndication:
+    parent: logger.channel_base
+    arguments: ['ucb_article_syndication']
   ucb_article_syndication:
     class: 'Drupal\ucb_article_syndication\ArticleSyndication'
     arguments:
       - '@config.factory'
+      - '@path_alias.manager'
+      - '@logger.channel.ucb_article_syndication'

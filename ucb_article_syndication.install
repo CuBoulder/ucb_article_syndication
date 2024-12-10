@@ -13,4 +13,5 @@
 function ucb_article_syndication_install() {
   $articleSyndication = \Drupal::service('ucb_article_syndication');
   $articleSyndication->showSyndicationFields();
+  $articleSyndication->createSyndicationArticleList();
 }

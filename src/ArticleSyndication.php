@@ -3,11 +3,20 @@
 namespace Drupal\ucb_article_syndication;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\node\Entity\Node;
+use Drupal\path_alias\AliasManagerInterface;
+use Drupal\pathauto\PathautoState;
+use Psr\Log\LoggerInterface;
 
 /**
  * The Article Syndication service contains functions used by the module.
  */
 class ArticleSyndication {
+
+  /**
+   * The path alias at which the syndication article list should reside.
+   */
+  const SYNDICATION_PATH = '/syndicate';
 
   /**
    * The config factory.
@@ -17,13 +26,37 @@ class ArticleSyndication {
   protected $configFactory;
 
   /**
+   * The path alias manager.
+   *
+   * @var \Drupal\path_alias\AliasManagerInterface
+   */
+  protected $aliasManager;
+
+  /**
+   * The logger channel for this module.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
    * Constructs the Article Syndication service.
    *
    * @param \Drupal\Core\Extension\ConfigFactoryInterface $config_factory
    *   The config factory.
+   * @param \Drupal\path_alias\AliasManagerInterface $alias_manager
+   *   The path alias manager.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   The logger channel for this module.
    */
-  public function __construct(ConfigFactoryInterface $config_factory) {
+  public function __construct(
+    ConfigFactoryInterface $config_factory,
+    AliasManagerInterface $alias_manager,
+    LoggerInterface $logger
+  ) {
     $this->configFactory = $config_factory;
+    $this->aliasManager = $alias_manager;
+    $this->logger = $logger;
   }
 
   /**
@@ -97,6 +130,36 @@ class ArticleSyndication {
       ->set('third_party_settings', $thirdPartySettings)
       ->set('hidden', $hidden)
       ->save();
+  }
+
+  /**
+   * Creates the syndication article list.
+   *
+   * The syndication article list is a special article list which allows
+   * category, audience, and unit term ids to be passed in as URL parameters.
+   * Its main use case is to be used as the "read more" page for the Campus
+   * News block.
+   *
+   * A new article list will be created only if a node doesn’t already exist at
+   * the same path.
+   */
+  public function createSyndicationArticleList() {
+    $pathAlias = $this::SYNDICATION_PATH;
+    if (preg_match('/node\/(\d+)/', $this->aliasManager->getPathByAlias($pathAlias))) {
+      $this->logger->warning("A syndication article list wasn’t created because a node already exists at the path alias $pathAlias.");
+    }
+    else {
+      $node = Node::create([
+        'type' => 'ucb_article_list',
+        'title' => 'Article Results',
+        'path' => [
+          'alias' => $pathAlias,
+          'pathauto' => PathautoState::SKIP,
+        ],
+        'body' => '',
+      ]);
+      $node->enforceIsNew()->save();
+    }
   }
 
 }
