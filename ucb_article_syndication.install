@@ -5,6 +5,8 @@
  * Contains install hooks used by the CU Boulder Article Syndication module.
  */
 
+use Drupal\Core\Config\FileStorage;
+
 /**
  * Runs when the CU Boulder Article Syndication module is installed.
  *
@@ -14,4 +16,13 @@ function ucb_article_syndication_install() {
   $articleSyndication = \Drupal::service('ucb_article_syndication');
   $articleSyndication->showSyndicationFields();
   $articleSyndication->createSyndicationArticleList();
+}
+
+/**
+ * Exposes the syndication taxonomies through JSON:API
+ */
+function ucb_article_syndication_update_10001() {
+  $modulePath = \Drupal::service('extension.list.module')->getPath('ucb_article_syndication');
+  $storage = new FileStorage($modulePath . '/config/optional');
+  \Drupal::service('config.installer')->installOptionalConfig($storage);
 }
